@@ -1,6 +1,4 @@
-# Hafıza Oyunu
-
-## Oyunun Amacı
-
-Hafıza oyunu ekranda rastgele oluşturulan sayıları verilen sürede akılda tutup , o sürenin bitiminde aynı sayıları aynı yere  belirtilen sürede girmektir. 
-Oyun  3  bölümden oluşmaktadır. Bölüm geçtikçe zorlaşmaktadır. İlk bölüm 2 sayı , 2.bölüm 4 sayı , 3. bölüm ise 7 sayı bulunmaktadır.  Oyunda her bölümde 1 adet joker hakkı bulunmaktadır . Bu hak “Tekrar Gösterme ” hakkıdır. Bu hak kullanıldığında aynı sayıları aynı saniyede tekrardan gösterme imkanı sağlar. Eğer verilen sürelerde doğru işlemleri yapamazsanız belli bir süre sonra oyun giriş ekranına yönlendirilirsiniz.
+# MEMORY GAME
+## Game Purpose
+The memory game is to remember randomly generated numbers on the screen for a given period of time and enter the same numbers in the same place within the specified time at the end of that period.
+The game consists of 3 parts. It gets harder as the level goes by. The first part has 2 numbers, the 2nd part has 4 numbers, and the 3rd part has 7 numbers. There is 1 joker right in each section of the game. This right is the right to “Re-Show”. When this right is used, it provides the opportunity to display the same numbers again at the same second. If you cannot perform the correct actions within the given time, you will be directed to the game login screen after a certain period of time.
