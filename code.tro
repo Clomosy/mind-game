@@ -1,0 +1,1090 @@
+  var
+    FrmLoginScreen,Lvl1Form,Lvl2Form,Lvl3Form : TclGameForm;
+    GameImg : TClProImage;
+    LoginScreenTopLyt,LoginScreenBottomLyt, // LoginScreen
+    Lvl1TopLyt,Lvl1BottomLyt,Lvl1InformationLyt, //Level1
+    Lvl2TopLyt,Lvl2BottomLyt,Lvl2InformationLyt, //Level2
+    Lvl3TopLyt,Lvl3BottomLyt,Lvl3InformationLyt,Lvl3TopLyt_1,Lvl3TopLyt_2 : TclLayout;//Level3
+    
+    AboutMemo : TclMemo;
+    
+    Level1Lbl,Lvl1Number1Lbl,Lvl1Number2Lbl,TitleLbl,Lvl1RightLbl,Lvl1SureLbl,Lvl1PointLbl, // Level1
+    Level2Lbl,Lvl2Number1Lbl,Lvl2Number2Lbl,Lvl2Number3Lbl,Lvl2Number4Lbl,Lvl2RightLbl,Lvl2SureLbl,Lvl2PointLbl, // Level2
+    Level3Lbl,Lvl3Number1Lbl,Lvl3Number2Lbl,Lvl3Number3Lbl,Lvl3Number4Lbl,Lvl3Number5Lbl,Lvl3Number6Lbl,Lvl3Number7Lbl,Lvl3RightLbl,Lvl3SureLbl,Lvl3PointLbl : TClProLabel; // Level3  
+    
+    Lvl1Number1Edt,Lvl1Number2Edt, //Level 1
+    Lvl2Number1Edt,Lvl2Number2Edt,Lvl2Number3Edt,Lvl2Number4Edt, //Level 2
+    Lvl3Number1Edt,Lvl3Number2Edt,Lvl3Number3Edt,Lvl3Number4Edt,Lvl3Number5Edt,Lvl3Number6Edt,Lvl3Number7Edt : TClProEdit; //Level 3
+    
+    Lvl1StartBtn,Lvl1ShowAgainBtn,Lvl1ControlBtn,Lvl1ShowTrueBtn,Lvl1NewChapter,Lvl1BackBtn,AboutBtn,GameStartBtn,GameCloseBtn, //Level1
+    Lvl2StartBtn,Lvl2ShowAgainBtn,Lvl2ControlBtn,Lvl2ShowTrueBtn,Lvl2NewChapter,Lvl2BackBtn, //Level2
+    Lvl3StartBtn,Lvl3ShowAgainBtn,Lvl3ControlBtn,Lvl3ShowTrueBtn,Lvl3NewChapter,Lvl3BackBtn : TClProButton; //Level3
+    
+    ShowTime,AnswerTime,SeeResultTime : TClTimer; 
+    ShowSecond,AnswerSecond,SeeResultSecond,TotalScore,Right,syc,LeftToFinish : Integer;
+    RightOver,AboutOpen : Boolean;
+    FrmAd:String;
+    WonSound,LoseSound:Single;
+    
+    Void CloseGame
+    {
+      TclProButton(FrmLoginScreen.clFindComponent('BtnGoBack')).Click;
+    }
+    
+    Void GoBack
+    {
+     ShowTime.Enabled=False;
+     AnswerTime.Enabled=False;
+     if (FrmAd == 'Lvl1Form') 
+     {
+     FrmLoginScreen.ClShow;
+     Lvl1Form.ClHide;
+     }
+     else if (FrmAd == 'Lvl2Form')  
+     {
+     FrmLoginScreen.ClShow;
+     Lvl1Form.ClHide;
+     Lvl2Form.ClHide;
+     }
+     else if (FrmAd == 'Lvl3Form') 
+     {
+     FrmLoginScreen.ClShow;
+     Lvl1Form.ClHide;
+     Lvl2Form.ClHide;
+     Lvl3Form.ClHide;
+     }
+    }
+    
+    Void VirtualKeyboardShow
+    {
+      if (FrmAd == 'Lvl1Form')
+      {
+      Lvl1BottomLyt.Margins.Bottom=Lvl1Form.clVKBoundsHeight;
+      }
+      if (FrmAd == 'Lvl2Form') 
+      {
+      Lvl2BottomLyt.Margins.Bottom=Lvl2Form.clVKBoundsHeight;
+      }
+      if (FrmAd == 'Lvl3Form')
+      {
+      Lvl3BottomLyt.Margins.Bottom=Lvl3Form.clVKBoundsHeight;
+      }
+    }
+    
+    Void VirtualKeyboardHidden
+    {
+      if (FrmAd == 'Lvl1Form') 
+      {
+      Lvl1BottomLyt.Margins.Bottom=0;
+      }
+      if (FrmAd == 'Lvl2Form')
+      {
+      Lvl2BottomLyt.Margins.Bottom=0;
+      }
+      if (FrmAd == 'Lvl3Form')
+      {
+      Lvl3BottomLyt.Margins.Bottom=0;
+      }
+    }
+    
+    Void ShowTrue
+    {
+     if (FrmAd == 'Lvl1Form') 
+     {
+     Lvl1StartBtn.Visible=False;
+     Lvl1ShowAgainBtn.Visible=False;
+     Lvl1ControlBtn.Visible=False;
+     Lvl1ShowTrueBtn.Enabled=False;
+     
+     if (LeftToFinish <> 0)
+     {
+     Lvl1Form.AddNewEvent(SeeResultTime,tbeOnTimer,'ClosingGame');
+     }
+     
+     for (syc= 1 to 2)
+     {
+     TclProLabel(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Lbl')).Visible = True;
+     TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).Visible = False;
+     }
+     }
+     if (FrmAd == 'Lvl2Form')
+     {
+     Lvl2StartBtn.Visible=False;
+     Lvl2ShowAgainBtn.Visible=False;
+     Lvl2ControlBtn.Visible=False;
+     Lvl2ShowTrueBtn.Enabled=False;
+     
+     if (LeftToFinish <> 0 )
+     {
+     Lvl2Form.AddNewEvent(SeeResultTime,tbeOnTimer,'ClosingGame');
+     }
+     
+     for (syc= 1 to 4)
+     {
+     TclProLabel(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Lbl')).Visible = True;
+     TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).Visible = False;
+     }
+     }
+    if (FrmAd == 'Lvl3Form')
+    {
+     Lvl3StartBtn.Visible=False;
+     Lvl3ShowAgainBtn.Visible=False;
+     Lvl3ControlBtn.Visible=False;
+     Lvl3ShowTrueBtn.Enabled=False;
+     
+     if (LeftToFinish <> 0)
+     {
+     Lvl3Form.AddNewEvent(SeeResultTime,tbeOnTimer,'ClosingGame');
+     }
+     
+     for (syc= 1 to 7)
+     {
+     TclProLabel(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Lbl')).Visible = True;
+     TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).Visible = False;
+     }
+    } 
+    }
+  
+    Void Controls
+    {
+    TotalScore=0;
+    if (FrmAd == 'Lvl1Form') 
+    {
+    LeftToFinish=2;
+      for (syc= 1 to 2)
+      {
+        if (TclProLabel(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Lbl')).Text == TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).Text)
+        {
+         TotalScore=TotalScore+10;
+         clComponent.SetupComponent(TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')),'{"BackgroundColor":"#00FF00"}');
+         TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).ReadOnly=True;
+         LeftToFinish=LeftToFinish-1;
+         if (LeftToFinish == 0 ) 
+         {
+          Lvl1Form.PlayGameSound(WonSound);
+          Lvl1NewChapter.Visible=True;
+          Lvl1StartBtn.Visible=False;
+          Lvl1ShowAgainBtn.Visible=False;
+          Lvl1ControlBtn.Visible=False;
+          AnswerTime.Enabled=False;
+         }
+        }
+        else if (TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).Text == '') 
+        {
+         clComponent.SetupComponent(TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')),'{"BackgroundColor":"#C0C0C0"}');
+        }
+        else
+        {
+         TotalScore=TotalScore-2;
+         clComponent.SetupComponent(TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')),'{"BackgroundColor":"#FF0000"}');
+        }
+      }  
+     Lvl1PointLbl.Text='PUANINIZ : '+IntToStr(TotalScore);
+    } 
+    if (FrmAd == 'Lvl2Form')
+    {
+    LeftToFinish=4;
+      for (syc= 1 to 4)
+      {
+        if (TclProLabel(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Lbl')).Text == TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).Text) 
+        {
+         TotalScore=TotalScore+10;
+         clComponent.SetupComponent(TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')),'{"BackgroundColor":"#00FF00"}');
+         TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).ReadOnly=True;
+         LeftToFinish=LeftToFinish-1;
+         if (LeftToFinish == 0 ) 
+         {
+          Lvl2Form.PlayGameSound(WonSound);
+          Lvl2NewChapter.Visible=True;
+          Lvl2StartBtn.Visible=False;
+          Lvl2ShowAgainBtn.Visible=False;
+          Lvl2ControlBtn.Visible=False;
+          AnswerTime.Enabled=False;
+         }
+        }
+        else if (TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).Text == '') 
+        {
+         clComponent.SetupComponent(TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')),'{"BackgroundColor":"#C0C0C0"}');
+        }
+        else
+        {
+         TotalScore=TotalScore-2;
+         clComponent.SetupComponent(TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')),'{"BackgroundColor":"#FF0000"}');
+        }
+      }  
+     Lvl2PointLbl.Text='PUANINIZ : '+IntToStr(TotalScore);
+    } 
+    if (FrmAd == 'Lvl3Form') 
+    {
+    LeftToFinish=7;
+      for (syc= 1 to 7)
+      {
+        if (TclProLabel(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Lbl')).Text == TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).Text)
+        {
+         TotalScore=TotalScore+10;
+         clComponent.SetupComponent(TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')),'{"BackgroundColor":"#00FF00"}');
+         TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).ReadOnly=True;
+         LeftToFinish=LeftToFinish-1;
+         if (LeftToFinish == 0) 
+         {
+          Lvl3Form.PlayGameSound(WonSound);
+          Lvl3NewChapter.Visible=True;
+          Lvl3StartBtn.Visible=False;
+          Lvl3ShowAgainBtn.Visible=False;
+          Lvl3ControlBtn.Visible=False;
+          AnswerTime.Enabled=False;
+         }
+        }
+        else if (TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).Text == '') 
+        {
+         clComponent.SetupComponent(TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')),'{"BackgroundColor":"#C0C0C0"}');
+        }
+        else
+        {
+         TotalScore=TotalScore-2;
+         clComponent.SetupComponent(TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')),'{"BackgroundColor":"#FF0000"}');
+        }
+      }  
+     Lvl3PointLbl.Text='PUANINIZ : '+IntToStr(TotalScore);
+    } 
+    }
+
+    Void AssignNumber
+    var
+    Number1Rnd,Number2Rnd,Number3Rnd,Number4Rnd,Number5Rnd,Number6Rnd,Number7Rnd,Number8Rnd,Number9Rnd,Number10Rnd,Number11Rnd,Number12Rnd:Integer;
+    {
+    if (FrmAd == 'Lvl1Form') 
+    {
+    for (syc= 1 to 2)
+      {
+       TclProLabel(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Lbl')).Visible = True;
+      }
+      Number1Rnd = Random() * 100; 
+      Lvl1Number1Lbl.Text =IntToStr(Number1Rnd);
+      Number2Rnd = Random() * 100;
+      Lvl1Number2Lbl.Text =IntToStr(Number2Rnd);
+      
+      Lvl1StartBtn.enabled=False;
+    
+      Lvl1SureLbl = Lvl1Form.AddNewProLabel(Lvl1InformationLyt,'Lvl1SureLbl','5 Saniye');
+      clComponent.SetupComponent(Lvl1SureLbl,'{"Align":"Left","Width":80,"Height":20,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","TextSize":15,"TextBold":"yes",
+      "RoundHeight":10,"RoundWidth":10,"BorderWidth":2,"BorderColor":"#3300CC","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":10,"MarginTop":10,"MarginBottom":10}');
+                             
+      ShowTime.Enabled = True;
+      ShowSecond =5;
+      Lvl1Form.AddNewEvent(ShowTime,tbeOnTimer,'TimeOver');
+    }  
+    if (FrmAd == 'Lvl2Form') 
+    {
+    for (syc= 1 to 4)
+      {
+       TclProLabel(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Lbl')).Visible = True;
+      }
+      Number1Rnd = Random() * 100; 
+      Lvl2Number1Lbl.Text =IntToStr(Number1Rnd);
+      Number2Rnd = Random() * 100;
+      Lvl2Number2Lbl.Text =IntToStr(Number2Rnd);
+      Number3Rnd = Random() * 100; 
+      Lvl2Number3Lbl.Text =IntToStr(Number3Rnd);
+      Number4Rnd = Random() * 100;
+      Lvl2Number4Lbl.Text =IntToStr(Number4Rnd);
+      
+      Lvl2StartBtn.enabled=False;
+    
+      Lvl2SureLbl = Lvl2Form.AddNewProLabel(Lvl2InformationLyt,'Lvl2SureLbl','10 Saniye');
+      clComponent.SetupComponent(Lvl2SureLbl,'{"Align":"Left","Width":80,"Height":20,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","TextSize":15,"TextBold":"yes",
+      "RoundHeight":10,"RoundWidth":10,"BorderWidth":2,"BorderColor":"#3300CC","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":10,"MarginTop":10,"MarginBottom":10}');
+                             
+      ShowTime.Enabled = True;
+      ShowSecond =10;
+      Lvl2Form.AddNewEvent(ShowTime,tbeOnTimer,'TimeOver');
+    }
+    if (FrmAd == 'Lvl3Form') 
+    {
+      for (syc= 1 to 7)
+      {
+       TclProLabel(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Lbl')).Visible = True;
+      }
+      Number1Rnd = Random() * 100; 
+      Lvl3Number1Lbl.Text =IntToStr(Number1Rnd);
+      Number2Rnd = Random() * 100;
+      Lvl3Number2Lbl.Text =IntToStr(Number2Rnd);
+      Number3Rnd = Random() * 100;
+      Lvl3Number3Lbl.Text =IntToStr(Number3Rnd);
+      Number4Rnd = Random() * 100;
+      Lvl3Number4Lbl.Text =IntToStr(Number4Rnd);
+      Number5Rnd = Random() * 100;
+      Lvl3Number5Lbl.Text =IntToStr(Number5Rnd);
+      Number6Rnd = Random() * 100;
+      Lvl3Number6Lbl.Text =IntToStr(Number6Rnd);
+      Number7Rnd = Random() * 100;
+      Lvl3Number7Lbl.Text =IntToStr(Number7Rnd);
+      
+      Lvl3StartBtn.enabled=False;
+    
+      Lvl3SureLbl = Lvl3Form.AddNewProLabel(Lvl3InformationLyt,'Lvl3SureLbl','15 Saniye');
+      clComponent.SetupComponent(Lvl3SureLbl,'{"Align":"Left","Width":80,"Height":20,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","TextSize":15,"TextBold":"yes",
+      "RoundHeight":10,"RoundWidth":10,"BorderWidth":2,"BorderColor":"#3300CC","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":10,"MarginTop":10,"MarginBottom":10}');
+      //Timer                                  
+      ShowTime.Enabled = True;
+      ShowSecond =15;
+      Lvl3Form.AddNewEvent(ShowTime,tbeOnTimer,'TimeOver');
+    } 
+    }    
+  
+  void ClosingGame
+  {
+  Dec(SeeResultSecond)
+  if (FrmAd =='Lvl1Form') 
+  {
+   Lvl1SureLbl.Text=IntToStr(SeeResultSecond)+' Saniye';
+   if (SeeResultSecond == 0 )
+   {
+     FrmLoginScreen.ClShow;
+     Lvl1Form.ClHide;
+     SeeResultTime.Enabled=False;
+   }
+  }
+  if (FrmAd =='Lvl2Form' )
+  {
+   Lvl2SureLbl.Text=IntToStr(SeeResultSecond)+' Saniye';
+   if (SeeResultSecond == 0 )
+   {
+     FrmLoginScreen.ClShow;
+     Lvl2Form.ClHide;
+     SeeResultTime.Enabled=False;
+   }
+  }
+  if (FrmAd =='Lvl3Form' )
+  {
+  Lvl3SureLbl.Text=IntToStr(SeeResultSecond)+' Saniye';
+   if (SeeResultSecond == 0 )
+   {
+     FrmLoginScreen.ClShow;
+     Lvl3Form.ClHide;
+     SeeResultTime.Enabled=False;
+   }
+  }
+  }
+    
+  void AnswerTimeOver
+  {
+    Dec(AnswerSecond)  
+    if (FrmAd == 'Lvl1Form')
+    {
+    Lvl1SureLbl.Text = IntToStr(AnswerSecond)+' Saniye';
+        if (AnswerSecond == 0 )                        
+        {
+        AnswerTime.Enabled=False;
+        Controls;
+        Lvl1ControlBtn.Visible=False;
+        Lvl1ShowTrueBtn.Visible=True;
+        Lvl1ShowAgainBtn.Enabled=False;
+        for (syc= 1 to 2)
+         {
+          TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).ReadOnly = True;
+         }
+        SeeResultTime= Lvl1Form.AddNewTimer(Lvl1Form,'SeeResultTime',1000);
+        SeeResultTime.Enabled = True;
+        SeeResultSecond =7;
+        if (LeftToFinish <> 0 )
+        {
+        Lvl1Form.PlayGameSound(LoseSound);
+        ShowMessage('10 Saniye içinde doğru cevap veremediğiniz için oyun bitti . ');
+        }
+        }
+    }    
+    if (FrmAd == 'Lvl2Form' )
+    {
+    Lvl2SureLbl.Text = IntToStr(AnswerSecond)+' Saniye';
+        if (AnswerSecond == 0)                        
+        {
+        AnswerTime.Enabled=False;
+        Controls;
+        Lvl2ControlBtn.Visible=False;
+        Lvl2ShowTrueBtn.Visible=True;
+        Lvl2ShowAgainBtn.Enabled=False;
+        for (syc= 1 to 4)
+         {
+          TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).ReadOnly = True;
+         }
+        SeeResultTime= Lvl2Form.AddNewTimer(Lvl2Form,'SeeResultTime',1000);
+        SeeResultTime.Enabled = True;
+        SeeResultSecond =10;
+        if (LeftToFinish <> 0)
+        {
+        Lvl2Form.PlayGameSound(LoseSound);
+        ShowMessage('15 Saniye içinde doğru cevap veremediğiniz için oyun bitti . ');
+        }
+        }
+    }    
+    if (FrmAd == 'Lvl3Form')
+    {
+    Lvl3SureLbl.Text = IntToStr(AnswerSecond)+' Saniye';
+        if (AnswerSecond == 0)                        
+        {
+        AnswerTime.Enabled=False;
+        Controls;
+        Lvl3ControlBtn.Visible=False;
+        Lvl3ShowTrueBtn.Visible=True;
+        Lvl3ShowAgainBtn.Enabled=False;
+        for (syc= 1 to 7)
+         {
+          TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).ReadOnly = True;
+         }
+        SeeResultTime= Lvl3Form.AddNewTimer(Lvl3Form,'SeeResultTime',1000);
+        SeeResultTime.Enabled = True;
+        SeeResultSecond =15;
+        if ( LeftToFinish <> 0 )
+        {
+        Lvl3Form.PlayGameSound(LoseSound);
+        ShowMessage('20 Saniye içinde doğru cevap veremediğiniz için oyun bitti . ');
+        }
+        }
+    } 
+  }
+  
+  void TimeOver
+  {             
+    Dec(ShowSecond)     
+    if (FrmAd == 'Lvl1Form')
+    {
+    Lvl1SureLbl.Text = IntToStr(ShowSecond)+' Saniye';
+    if (ShowSecond == 0)                        
+    {
+    ShowTime.Enabled=False;
+    AnswerTime.Enabled = True;
+    AnswerSecond =10;
+    Lvl1SureLbl.Text='10 Saniye';
+    Lvl1Form.AddNewEvent(AnswerTime,tbeOnTimer,'AnswerTimeOver');
+        for (syc= 1 to 2)
+         {
+          TclProLabel(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Lbl')).Visible = False;
+          TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).Visible = True;
+         }
+         Lvl1PointLbl.Visible=True;
+         Lvl1ControlBtn.Enabled=True;
+         if (RightOver == False)
+         {
+           Lvl1ShowAgainBtn.Enabled=True;
+           RightOver = True;
+         }
+         else
+         {
+           Lvl1ShowAgainBtn.Enabled=False;
+         }
+    }
+    }
+    if (FrmAd == 'Lvl2Form' )
+    {
+    Lvl2SureLbl.Text = IntToStr(ShowSecond)+' Saniye';
+    if ( ShowSecond == 0 )                        
+    {
+    ShowTime.Enabled=False;
+    AnswerTime.Enabled = True;
+    AnswerSecond =15;
+    Lvl2SureLbl.Text='15 Saniye';
+    Lvl2Form.AddNewEvent(AnswerTime,tbeOnTimer,'AnswerTimeOver');
+        for (syc= 1 to 4)
+         {
+          TclProLabel(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Lbl')).Visible = False;
+          TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).Visible = True;
+         }
+         Lvl2PointLbl.Visible=True;
+         Lvl2ControlBtn.Enabled=True;
+         if (RightOver == False )
+         {
+           Lvl2ShowAgainBtn.Enabled=True;
+           RightOver = True;
+         }
+         else
+         {
+           Lvl2ShowAgainBtn.Enabled=False;
+         }
+    }
+    }
+    if (FrmAd == 'Lvl3Form')
+    {
+    Lvl3SureLbl.Text = IntToStr(ShowSecond)+' Saniye';
+    if (ShowSecond == 0)                        
+    {
+    ShowTime.Enabled=False;
+    AnswerTime.Enabled = True;
+    AnswerSecond =20;
+    Lvl3SureLbl.Text='20 Saniye';
+    Lvl3Form.AddNewEvent(AnswerTime,tbeOnTimer,'AnswerTimeOver');
+        for (syc= 1 to 7)
+         {
+          TclProLabel(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Lbl')).Visible = False;
+          TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).Visible = True;
+         }
+         Lvl3PointLbl.Visible=True;
+         Lvl3ControlBtn.Enabled=True;
+         if (RightOver == False)
+         {
+           Lvl3ShowAgainBtn.Enabled=True;
+           RightOver = True;
+         }
+         else
+         {
+           Lvl3ShowAgainBtn.Enabled=False;
+         }
+    }
+  }  
+  }
+  
+  void AgainJkr
+  {
+  if (FrmAd == 'Lvl1Form')
+  {
+    Right=Right-1;
+    Lvl1RightLbl.Text='Hak : '+IntToStr(Right);
+    for (syc= 1 to 2)
+    {
+      if (TclProLabel(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Lbl')).Text == TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).Text)
+      {
+       TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).ReadOnly=True;
+      }
+      else
+      {
+        TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).ReadOnly = False;;
+      }
+      TclProLabel(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Lbl')).Visible = True;
+      TclProEdit(Lvl1Form.clFindComponent('Lvl1Number'+IntToStr(syc)+'Edt')).Visible = False;
+    }
+    Lvl1PointLbl.Visible=False;
+    Lvl1ControlBtn.Enabled=False;
+    Lvl1ShowAgainBtn.Enabled=False;
+    AnswerTime.Enabled=False;
+    ShowTime.Enabled=True;
+    Lvl1SureLbl.Text ='5 Saniye';
+    ShowSecond=5;
+    Dec(ShowSecond)
+    Lvl1SureLbl.Text = IntToStr(ShowSecond)+' Saniye';
+    if (ShowSecond == 0)
+    {
+     ShowTime.Enabled=False;
+     AnswerTime.Enabled=True;
+     AnswerTimeOver;
+    } 
+  }  
+  if (FrmAd == 'Lvl2Form')
+  {
+    Right=Right-1;
+    Lvl2RightLbl.Text='Hak : '+IntToStr(Right);
+    for (syc= 1 to 4)
+    {
+      if (TclProLabel(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Lbl')).Text == TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).Text)
+      {
+       TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).ReadOnly=True;
+      }
+      else
+      {
+        TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).ReadOnly = False;;
+      }
+      TclProLabel(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Lbl')).Visible = True;
+      TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).Visible = False;
+    }
+    Lvl2PointLbl.Visible=False;
+    Lvl2ControlBtn.Enabled=False;
+    Lvl2ShowAgainBtn.Enabled=False;
+    AnswerTime.Enabled=False;
+    ShowTime.Enabled=True;
+    Lvl2SureLbl.Text ='10 Saniye';
+    ShowSecond=10;
+    Dec(ShowSecond)
+    Lvl2SureLbl.Text = IntToStr(ShowSecond)+' Saniye';
+    if (ShowSecond == 0)
+    {
+     ShowTime.Enabled=False;
+     AnswerTime.Enabled=True;
+     AnswerTimeOver;
+    } 
+  } 
+  if (FrmAd == 'Lvl3Form')
+  {
+    Right=Right-1;
+    Lvl3RightLbl.Text='Hak : '+IntToStr(Right);
+    for (syc= 1 to 7)
+    {
+      if (TclProLabel(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Lbl')).Text == TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).Text)
+      {
+       TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).ReadOnly=True;
+      }
+      else
+      {
+        TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).ReadOnly = False;;
+      }
+      TclProLabel(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Lbl')).Visible = True;
+      TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).Visible = False;
+    }
+    Lvl3PointLbl.Visible=False;
+    Lvl3ControlBtn.Enabled=False;
+    Lvl3ShowAgainBtn.Enabled=False;
+    AnswerTime.Enabled=False;
+    ShowTime.Enabled=True;
+    Lvl3SureLbl.Text ='15 Saniye';
+    ShowSecond=15;
+    Dec(ShowSecond)
+    Lvl3SureLbl.Text = IntToStr(ShowSecond)+' Saniye';
+    if (ShowSecond == 0)
+    {
+     ShowTime.Enabled=False;
+     AnswerTime.Enabled=True;
+     AnswerTimeOver;
+    }
+  }  
+  }
+  
+    void MemoryGameLevel3
+    {
+    Lvl3Form = TclGameForm.Create(Self);
+    Lvl3Form.SetFormColor('#09797d','',clGNone);
+    TotalScore=0;
+    Right=1;
+    RightOver = False;
+    FrmAd = 'Lvl3Form'
+    
+    Lvl3Form.AddGameAssetFromUrl('https://clomosy.com/demos/kaydet.wav');
+    LoseSound = Lvl3Form.RegisterSound('kaydet.wav');
+    Lvl3Form.SoundIsActive=True;
+    
+    Lvl3Form.AddGameAssetFromUrl('https://www.clomosy.com/demos/win.wav');
+    WonSound = Lvl3Form.RegisterSound('win.wav');
+    Lvl3Form.SoundIsActive=True;
+    
+    Lvl3InformationLyt = Lvl3Form.AddNewLayout(Lvl3Form,'Lvl3InformationLyt');
+    Lvl3InformationLyt.Align = alMostTop;
+    Lvl3InformationLyt.Width = TForm(Lvl3Form).ClientWidth;
+    Lvl3InformationLyt.Height = 50;
+    
+    Lvl3TopLyt = Lvl3Form.AddNewLayout(Lvl3Form,'Lvl3TopLyt');
+    Lvl3TopLyt.Align  = alCenter;
+    Lvl3TopLyt.Width  = 320;
+    Lvl3TopLyt.Height = 160;
+    
+       Lvl3TopLyt_1 = Lvl3Form.AddNewLayout(Lvl3TopLyt,'Lvl3TopLyt_1');
+       Lvl3TopLyt_1.Align = alMostTop;
+       Lvl3TopLyt_1.Width = Lvl3TopLyt.Width;
+       Lvl3TopLyt_1.Height = Lvl3TopLyt.Height/2-5;
+       
+       Lvl3TopLyt_2 = Lvl3Form.AddNewLayout(Lvl3TopLyt,'Lvl3TopLyt_2');
+       Lvl3TopLyt_2.Align = alMostTop;
+       Lvl3TopLyt_2.Width = Lvl3TopLyt.Width;
+       Lvl3TopLyt_2.Height = Lvl3TopLyt.Height/2-5;
+       Lvl3TopLyt_2.Margins.Top=10;
+
+    Lvl3BottomLyt = Lvl3Form.AddNewLayout(Lvl3Form,'Lvl3BottomLyt');
+    Lvl3BottomLyt.Align  = alMostBottom;
+    Lvl3BottomLyt.Width  = TForm(Lvl3Form).ClientWidth;
+    Lvl3BottomLyt.Height = 150;
+    
+    Lvl3BackBtn = Lvl3Form.AddNewProButton(Lvl3InformationLyt,'Lvl3BackBtn','');
+    clComponent.SetupComponent(Lvl3BackBtn,'{"Align":"MostLeft","Width":40,"Height":40,"ImgUrl":"https://clomosy.com/demos/XoXback.png"}');
+    Lvl3Form.AddNewEvent(Lvl3BackBtn,tbeOnClick,'GoBack');
+    
+    Lvl3RightLbl = Lvl3Form.AddNewProLabel(Lvl3InformationLyt,'Lvl3RightLbl','Hak : 1');
+    clComponent.SetupComponent(Lvl3RightLbl,'{"Align":"MostLeft","Height":20,"Width":80,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","TextSize":15,"TextBold":"yes","RoundHeight":10,"RoundWidth":10,"BorderWidth":2,"BorderColor":"#3300CC","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":10,"MarginTop":10,"MarginBottom":10}');
+
+    Lvl3Number1Lbl = Lvl3Form.AddNewProLabel(Lvl3TopLyt_1,'Lvl3Number1Lbl','');
+    clComponent.SetupComponent(Lvl3Number1Lbl,'{"Align":"MostLeft","Width":'+IntToStr(Lvl3TopLyt_1.Width/4-3.75)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center"}');
+  
+    Lvl3Number2Lbl = Lvl3Form.AddNewProLabel(Lvl3TopLyt_1,'Lvl3Number2Lbl','');
+    clComponent.SetupComponent(Lvl3Number2Lbl,'{"Align":"MostLeft","Width":'+IntToStr(Lvl3TopLyt_1.Width/4-3.75)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl3Number3Lbl = Lvl3Form.AddNewProLabel(Lvl3TopLyt_1,'Lvl3Number3Lbl','');
+    clComponent.SetupComponent(Lvl3Number3Lbl,'{"Align" : "Left","Width":'+IntToStr(Lvl3TopLyt_1.Width/4-3.75)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl3Number4Lbl = Lvl3Form.AddNewProLabel(Lvl3TopLyt_1,'Lvl3Number4Lbl','');
+    clComponent.SetupComponent(Lvl3Number4Lbl,'{"Align":"Right","Width":'+IntToStr(Lvl3TopLyt_1.Width/4-3.75)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl3Number5Lbl = Lvl3Form.AddNewProLabel(Lvl3TopLyt_2,'Lvl3Number5Lbl','');
+    clComponent.SetupComponent(Lvl3Number5Lbl,'{"Align":"MostLeft","Width":'+IntToStr(Lvl3TopLyt_2.Width/3-5)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center"}');
+    
+    Lvl3Number6Lbl = Lvl3Form.AddNewProLabel(Lvl3TopLyt_2,'Lvl3Number6Lbl','');
+    clComponent.SetupComponent(Lvl3Number6Lbl,'{"Align":"MostLeft","Width":'+IntToStr(Lvl3TopLyt_2.Width/3-5)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":7}');
+    
+    Lvl3Number7Lbl = Lvl3Form.AddNewProLabel(Lvl3TopLyt_2,'Lvl3Number7Lbl','');
+    clComponent.SetupComponent(Lvl3Number7Lbl,'{"Align":"Left","Width":'+IntToStr(Lvl3TopLyt_2.Width/3-5)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":7}');
+    
+    Lvl3PointLbl = Lvl3Form.AddNewProLabel(Lvl3BottomLyt,'Lvl3PointLbl','PUANINIZ :');
+    clComponent.SetupComponent(Lvl3PointLbl,'{"Align":"Bottom","Height":23,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","TextSize":20,"TextBold":"yes","RoundHeight":10,"RoundWidth":10,"BorderWidth":2,"BorderColor":"#3300CC","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginRight":60,"MarginLeft":60,"MarginBottom":20}');
+    
+    for (syc= 1 to 7)
+    {
+    TclProLabel(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Lbl')).Visible = False;
+    }
+    Lvl3PointLbl.Visible=False;
+    
+    Lvl3Number1Edt = Lvl3Form.AddNewProEdit(Lvl3TopLyt_1,'Lvl3Number1Edt','1.SAYI');
+    clComponent.SetupComponent(Lvl3Number1Edt,'{"Align":"MostLeft","Width":'+IntToStr(Lvl3TopLyt_1.Width/4-3.75)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center"}');
+    
+    Lvl3Number2Edt = Lvl3Form.AddNewProEdit(Lvl3TopLyt_1,'Lvl3Number2Edt','2.SAYI');
+    clComponent.SetupComponent(Lvl3Number2Edt,'{"Align":"MostLeft","Width":'+IntToStr(Lvl3TopLyt_1.Width/4-3.75)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl3Number3Edt = Lvl3Form.AddNewProEdit(Lvl3TopLyt_1,'Lvl3Number3Edt','3.SAYI');
+    clComponent.SetupComponent(Lvl3Number3Edt,'{"Align":"Left","Width":'+IntToStr(Lvl3TopLyt_1.Width/4-3.75)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl3Number4Edt = Lvl3Form.AddNewProEdit(Lvl3TopLyt_1,'Lvl3Number4Edt','4.SAYI');
+    clComponent.SetupComponent(Lvl3Number4Edt,'{"Align":"Right","Width":'+IntToStr(Lvl3TopLyt_1.Width/4-3.75)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl3Number5Edt = Lvl3Form.AddNewProEdit(Lvl3TopLyt_2,'Lvl3Number5Edt','5.SAYI');
+    clComponent.SetupComponent(Lvl3Number5Edt,'{"Align":"MostLeft","Width":'+IntToStr(Lvl3TopLyt_2.Width/3-5)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":7.5}');
+    
+    Lvl3Number6Edt = Lvl3Form.AddNewProEdit(Lvl3TopLyt_2,'Lvl3Number6Edt','6.SAYI');
+    clComponent.SetupComponent(Lvl3Number6Edt,'{"Align":"MostLeft","Width":'+IntToStr(Lvl3TopLyt_2.Width/3-5)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":7.5}');
+    
+    Lvl3Number7Edt = Lvl3Form.AddNewProEdit(Lvl3TopLyt_2,'Lvl3Number7Edt','7.SAYI');
+    clComponent.SetupComponent(Lvl3Number7Edt,'{"Align":"Left","Width":'+IntToStr(Lvl3TopLyt_2.Width/3-5)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+
+    for (syc= 1 to 7)
+    {
+    TclProLabel(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).Visible = False;
+    TclProEdit(Lvl3Form.clFindComponent('Lvl3Number'+IntToStr(syc)+'Edt')).clTypeOfField = taFloat;
+    }
+    
+    Lvl3StartBtn = Lvl3Form.AddNewProButton(Lvl3BottomLyt,'Lvl3StartBtn','BAŞLAT');
+    clComponent.SetupComponent(Lvl3StartBtn,'{"Align":"Center","Width":100,"Height":40,"BorderWidth":4,"RoundHeight":2,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes","MarginRight":250}');
+    Lvl3Form.AddNewEvent(Lvl3StartBtn,tbeOnClick,'AssignNumber');
+    
+    Lvl3ShowAgainBtn = Lvl3Form.AddNewProButton(Lvl3BottomLyt,'Lvl3ShowAgainBtn','TEKRAR GÖSTER');
+    clComponent.SetupComponent(Lvl3ShowAgainBtn,'{"Align":"Center","Width":120,"Height":40,"BorderWidth":4,"RoundHeight":2,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes"}');
+    Lvl3ShowAgainBtn.Enabled=False;
+    Lvl3Form.AddNewEvent(Lvl3ShowAgainBtn,tbeOnClick,'AgainJkr');
+    
+    Lvl3ControlBtn = Lvl3Form.AddNewProButton(Lvl3BottomLyt,'Lvl3ControlBtn','KONTROL ET');
+    clComponent.SetupComponent(Lvl3ControlBtn,'{"Align":"Center","Width":100,"Height":40,"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes","MarginLeft":250}');
+    Lvl3ControlBtn.Enabled=False;
+    Lvl3Form.AddNewEvent(Lvl3ControlBtn,tbeOnClick,'Controls');
+    
+    Lvl3ShowTrueBtn = Lvl3Form.AddNewProButton(Lvl3BottomLyt,'Lvl3ShowTrueBtn','DOĞRUSUNU GÖSTER');
+    clComponent.SetupComponent(Lvl3ShowTrueBtn,'{"Align":"Center","Width":'+IntToStr(Lvl1BottomLyt.Width)+',"Height":40,"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes"}');
+    Lvl3ShowTrueBtn.Visible=False;
+    Lvl3Form.AddNewEvent(Lvl3ShowTrueBtn,tbeOnClick,'ShowTrue');
+    
+    Lvl3NewChapter = Lvl3Form.AddNewProButton(Lvl3BottomLyt,'Lvl3NewChapter','Oyundan Çık');
+    clComponent.SetupComponent(Lvl3NewChapter,'{"Align":"Center","Width":'+IntToStr(Lvl3BottomLyt.Width)+',"Height":40,"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes"}');
+    Lvl3NewChapter.Visible=False;
+    Lvl3Form.AddNewEvent(Lvl3NewChapter,tbeOnClick,'GoBack');
+    
+    Level3Lbl = Lvl3Form.AddNewProLabel(Lvl3InformationLyt,'Level3Lbl','Level 3');
+    clComponent.SetupComponent(Level3Lbl,'{"Align":"MostRight","Height":20,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","BorderWidth":2,"BorderColor":"3300CC","TextSize":20,"TextBold":"yes","RoundHeight":10,"RoundWidth":10,"TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginRight":10,"MarginBottom":10,"MarginTop":10}');
+    
+    ShowTime= Lvl3Form.AddNewTimer(Lvl3Form,'ShowTime',1000);
+    ShowTime.Enabled=False;
+    
+    AnswerTime= Lvl3Form.AddNewTimer(Lvl3Form,'AnswerTime',1000);
+    AnswerTime.Enabled=False;
+    
+    Lvl3Form.AddNewEvent(Lvl3Form,tbeOnFormClose,'GoBack');
+    Lvl3Form.AddNewEvent(Lvl3Form,tbeOnVirtualKeyboardShown,'VirtualKeyboardShow'); 
+    Lvl3Form.AddNewEvent(Lvl3Form,tbeOnVirtualKeyboardHidden,'VirtualKeyboardHidden'); 
+    
+    Lvl3Form.Run;
+    }
+    
+    void GoLevel3
+    {
+    MemoryGameLevel3;
+    Lvl2Form.ClHide;
+    }
+    
+    void MemoryGameLevel2
+    {
+    Lvl2Form = TclGameForm.Create(Self);
+    Lvl2Form.SetFormColor('#09797d','',clGNone);
+    TotalScore=0;
+    Right=1;
+    RightOver = False;
+    FrmAd='Lvl2Form';
+    
+    Lvl2Form.AddGameAssetFromUrl('https://www.clomosy.com/demos/win.wav');
+    WonSound = Lvl2Form.RegisterSound('win.wav');
+    Lvl2Form.SoundIsActive=True;
+    
+    Lvl2Form.AddGameAssetFromUrl('https://clomosy.com/demos/kaydet.wav');
+    LoseSound = Lvl2Form.RegisterSound('kaydet.wav');
+    Lvl2Form.SoundIsActive=True;
+    
+    Lvl2InformationLyt = Lvl2Form.AddNewLayout(Lvl2Form,'Lvl2InformationLyt');
+    Lvl2InformationLyt.Align = alMostTop;
+    Lvl2InformationLyt.Width = TForm(Lvl2Form).ClientWidth;
+    Lvl2InformationLyt.Height = 50;
+    
+    Lvl2TopLyt = Lvl2Form.AddNewLayout(Lvl2Form,'Lvl2TopLyt');
+    Lvl2TopLyt.Align  = alCenter;
+    Lvl2TopLyt.Width  = 320;
+    Lvl2TopLyt.Height = 100;
+
+    Lvl2BottomLyt = Lvl2Form.AddNewLayout(Lvl2Form,'Lvl2BottomLyt');
+    Lvl2BottomLyt.Align  = alMostBottom;
+    Lvl2BottomLyt.Width  = TForm(Lvl2Form).ClientWidth;
+    Lvl2BottomLyt.Height = 150;
+    
+    Lvl2BackBtn = Lvl2Form.AddNewProButton(Lvl2InformationLyt,'Lvl2BackBtn','');
+    clComponent.SetupComponent(Lvl2BackBtn,'{"Align":"MostLeft","Width":40,"Height":40,"ImgUrl":"https://clomosy.com/demos/XoXback.png"}');
+    Lvl2Form.AddNewEvent(Lvl2BackBtn,tbeOnClick,'GoBack');
+    
+    Lvl2RightLbl = Lvl2Form.AddNewProLabel(Lvl2InformationLyt,'Lvl2RightLbl','Hak : 1');
+    clComponent.SetupComponent(Lvl2RightLbl,'{"Align":"MostLeft","Width":80,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","TextSize":15,"TextBold":"yes","RoundHeight":10,"RoundWidth":10,"BorderWidth":2,"BorderColor":"#3300CC","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":10,"MarginTop":10,"MarginBottom":10}');
+
+    Lvl2Number1Lbl = Lvl2Form.AddNewProLabel(Lvl2TopLyt,'Lvl2Number1Lbl','');
+    clComponent.SetupComponent(Lvl2Number1Lbl,'{"Align":"MostLeft","Width":'+IntToStr(Lvl2TopLyt.Width/4-3.75)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center"}');
+  
+    Lvl2Number2Lbl = Lvl2Form.AddNewProLabel(Lvl2TopLyt,'Lvl2Number2Lbl','');
+    clComponent.SetupComponent(Lvl2Number2Lbl,'{"Align":"MostLeft","Width":'+IntToStr(Lvl2TopLyt.Width/4-3.75)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl2Number3Lbl = Lvl2Form.AddNewProLabel(Lvl2TopLyt,'Lvl2Number3Lbl','');
+    clComponent.SetupComponent(Lvl2Number3Lbl,'{"Align":"Left","Width":'+IntToStr(Lvl2TopLyt.Width/4-3.75)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl2Number4Lbl = Lvl2Form.AddNewProLabel(Lvl2TopLyt,'Lvl2Number4Lbl','');
+    clComponent.SetupComponent(Lvl2Number4Lbl,'{"Align":"Right","Width":'+IntToStr(Lvl2TopLyt.Width/4-3.75)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+
+    Lvl2PointLbl = Lvl2Form.AddNewProLabel(Lvl2BottomLyt,'Lvl2PointLbl','PUANINIZ :');
+    clComponent.SetupComponent(Lvl2PointLbl,'{"Align":"Bottom","Height":23,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","TextSize":20,"TextBold":"yes","RoundHeight":10,"RoundWidth":10,"BorderWidth":2,"BorderColor":"#3300CC","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginRight":60,"MarginLeft":60,"MarginBottom":20}');
+    
+    for (syc= 1 to 4)
+    {
+    TclProLabel(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Lbl')).Visible = False;
+    }
+    Lvl2PointLbl.Visible=False;
+    
+    Lvl2Number1Edt = Lvl2Form.AddNewProEdit(Lvl2TopLyt,'Lvl2Number1Edt','1.SAYI');
+    clComponent.SetupComponent(Lvl2Number1Edt,'{"Align" : "MostLeft","Width":'+IntToStr(Lvl2TopLyt.Width/4-3.75)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center"}');
+    
+    Lvl2Number2Edt = Lvl2Form.AddNewProEdit(Lvl2TopLyt,'Lvl2Number2Edt','2.SAYI');
+    clComponent.SetupComponent(Lvl2Number2Edt,'{"Align" : "MostLeft","Width":'+IntToStr(Lvl2TopLyt.Width/4-3.75)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl2Number3Edt = Lvl2Form.AddNewProEdit(Lvl2TopLyt,'Lvl2Number3Edt','3.SAYI');
+    clComponent.SetupComponent(Lvl2Number3Edt,'{"Align" : "Left","Width":'+IntToStr(Lvl2TopLyt.Width/4-3.75)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+    
+    Lvl2Number4Edt = Lvl2Form.AddNewProEdit(Lvl2TopLyt,'Lvl2Number4Edt','4.SAYI');
+    clComponent.SetupComponent(Lvl2Number4Edt,'{"Align" : "Right","Width":'+IntToStr(Lvl2TopLyt.Width/4-3.75)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":5}');
+
+    for (syc= 1 to 4)
+    {
+    TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).Visible = False;
+    TclProEdit(Lvl2Form.clFindComponent('Lvl2Number'+IntToStr(syc)+'Edt')).clTypeOfField = taFloat;
+    }
+
+    Lvl2StartBtn = Lvl2Form.AddNewProButton(Lvl2BottomLyt,'Lvl2StartBtn','BAŞLAT');
+    clComponent.SetupComponent(Lvl2StartBtn,'{"Align":"Center","Width":100,"Height":40,"BorderWidth":4,"RoundHeight":2,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes","MarginRight":250}');
+    Lvl2Form.AddNewEvent(Lvl2StartBtn,tbeOnClick,'AssignNumber');
+    
+    Lvl2ShowAgainBtn = Lvl2Form.AddNewProButton(Lvl2BottomLyt,'Lvl2ShowAgainBtn','TEKRAR GÖSTER');
+    clComponent.SetupComponent(Lvl2ShowAgainBtn,'{"Align":"Center","Width":120,"Height":40,"BorderWidth":4,"RoundHeight":2,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes"}');
+    Lvl2ShowAgainBtn.Enabled=False;
+    Lvl2Form.AddNewEvent(Lvl2ShowAgainBtn,tbeOnClick,'AgainJkr');
+    
+    Lvl2ControlBtn = Lvl2Form.AddNewProButton(Lvl2BottomLyt,'Lvl2ControlBtn','KONTROL ET');
+    clComponent.SetupComponent(Lvl2ControlBtn,'{"Align" : "Center","Width":100,"Height":40,"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes","MarginLeft":250}');
+    Lvl2ControlBtn.Enabled=False;
+    Lvl2Form.AddNewEvent(Lvl2ControlBtn,tbeOnClick,'Controls');
+    
+    Lvl2ShowTrueBtn = Lvl2Form.AddNewProButton(Lvl2BottomLyt,'Lvl2ShowTrueBtn','DOĞRUSUNU GÖSTER');
+    clComponent.SetupComponent(Lvl2ShowTrueBtn,'{"Align" : "Center","Width":'+IntToStr(Lvl1BottomLyt.Width)+',"Height":40,"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes"}');
+    Lvl2ShowTrueBtn.Visible=False;
+    Lvl2Form.AddNewEvent(Lvl2ShowTrueBtn,tbeOnClick,'ShowTrue');
+    
+    Lvl2NewChapter = Lvl2Form.AddNewProButton(Lvl2BottomLyt,'Lvl2NewChapter','Yeni Bölüme Geç');
+    clComponent.SetupComponent(Lvl2NewChapter,'{"Align" : "Center","Width":'+IntToStr(Lvl2BottomLyt.Width)+',"Height":40,"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes"}');
+    Lvl2NewChapter.Visible=False;
+    Lvl2Form.AddNewEvent(Lvl2NewChapter,tbeOnClick,'GoLevel3');
+    
+    Level2Lbl = Lvl2Form.AddNewProLabel(Lvl2InformationLyt,'Level2Lbl','Level 2');
+    clComponent.SetupComponent(Level2Lbl,'{"Align":"MostRight","Height":20,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","BorderWidth":2,"BorderColor":"3300CC","TextSize":20,"TextBold":"yes","RoundHeight":10,"RoundWidth":10,"TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginRight":10,"MarginBottom":10,"MarginTop":10}');
+    
+    ShowTime= Lvl2Form.AddNewTimer(Lvl2Form,'ShowTime',1000);
+    ShowTime.Enabled=False;
+    
+    AnswerTime= Lvl2Form.AddNewTimer(Lvl2Form,'AnswerTime',1000);
+    AnswerTime.Enabled=False;
+    
+    Lvl2Form.AddNewEvent(Lvl2Form,tbeOnFormClose,'GoBack');
+    Lvl2Form.AddNewEvent(Lvl2Form,tbeOnVirtualKeyboardShown,'VirtualKeyboardShow'); 
+    Lvl2Form.AddNewEvent(Lvl2Form,tbeOnVirtualKeyboardHidden,'VirtualKeyboardHidden');
+    
+    Lvl2Form.Run;
+    }
+    
+    void GoLevel2
+    {
+    MemoryGameLevel2;
+    Lvl1Form.ClHide;
+    }
+   
+    void MemoryGameLevel1
+    {
+    Lvl1Form = TclGameForm.Create(Self);
+    Lvl1Form.SetFormColor('#008080','',clGNone);
+    TotalScore=0;
+    Right=1;
+    RightOver = False;
+    FrmAd='Lvl1Form';
+    
+    Lvl1Form.AddGameAssetFromUrl('https://www.clomosy.com/demos/win.wav');
+    WonSound = Lvl1Form.RegisterSound('win.wav');
+    Lvl1Form.SoundIsActive=True;
+    
+    Lvl1Form.AddGameAssetFromUrl('https://clomosy.com/demos/kaydet.wav');
+    LoseSound = Lvl1Form.RegisterSound('kaydet.wav');
+    Lvl1Form.SoundIsActive=True;
+    
+    Lvl1InformationLyt = Lvl1Form.AddNewLayout(Lvl1Form,'Lvl1InformationLyt');
+    Lvl1InformationLyt.Align = alMostTop;
+    Lvl1InformationLyt.Width = TForm(Lvl1Form).ClientWidth;
+    Lvl1InformationLyt.Height =50;
+    
+    Lvl1TopLyt = Lvl1Form.AddNewLayout(Lvl1Form,'Lvl1TopLyt');
+    Lvl1TopLyt.Align  = alCenter;
+    Lvl1TopLyt.Width  = 300;
+    Lvl1TopLyt.Height = 100;
+
+    Lvl1BottomLyt = Lvl1Form.AddNewLayout(Lvl1Form,'Lvl1BottomLyt');
+    Lvl1BottomLyt.Align  = alMostBottom;
+    Lvl1BottomLyt.Width  = TForm(Lvl1Form).ClientWidth;
+    Lvl1BottomLyt.Height = 150;
+    
+    Lvl1BackBtn = Lvl1Form.AddNewProButton(Lvl1InformationLyt,'Lvl1BackBtn','');
+    clComponent.SetupComponent(Lvl1BackBtn,'{"Align":"MostLeft","Width":40,"Height":40,"ImgUrl":"https://clomosy.com/demos/XoXback.png"}');
+    Lvl1Form.AddNewEvent(Lvl1BackBtn,tbeOnClick,'GoBack');
+    
+    Lvl1RightLbl = Lvl1Form.AddNewProLabel(Lvl1InformationLyt,'Lvl1RightLbl','Hak : 1');
+    clComponent.SetupComponent(Lvl1RightLbl,'{"Align":"MostLeft","Width":80,"BackgroundColor":"#66CCCC","RoundHeight":10,"RoundWidth":10,"BorderWidth":2,"BorderColor":"#3300CC","TextColor":"#6666FF","TextSize":15,"TextBold":"yes","TextHorizontalAlign":"center","TextVerticalAlign":"center","MarginLeft":10,"MarginTop":10,"MarginBottom":10}');
+
+    Lvl1Number1Lbl = Lvl1Form.AddNewProLabel(Lvl1TopLyt,'Lvl1Number1Lbl','');
+    clComponent.SetupComponent(Lvl1Number1Lbl,'{"Align":"MostLeft","Width":'+IntToStr(Lvl1TopLyt.Width/2-10)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center"}');
+  
+    Lvl1Number2Lbl = Lvl1Form.AddNewProLabel(Lvl1TopLyt,'Lvl1Number2Lbl','');
+    clComponent.SetupComponent(Lvl1Number2Lbl,'{"Align":"MostLeft","Width":'+IntToStr(Lvl1TopLyt.Width/2-10)+',"TextSize":20,"TextColor":"#FFFFFF","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":20}');
+    
+    Lvl1PointLbl = Lvl1Form.AddNewProLabel(Lvl1BottomLyt,'Lvl1PointLbl','PUANINIZ :');
+    clComponent.SetupComponent(Lvl1PointLbl,'{"Align":"MostBottom","Height":25,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","TextSize":20,"TextBold":"yes","RoundHeight":7,"RoundWidth":7,"BorderWidth":2,"BorderColor":"#3300CC","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginRight":'+IntToStr(Lvl1BottomLyt.Width/3.5)+',"MarginLeft":'+IntToStr(Lvl1BottomLyt.Width/3.5)+',"MarginBottom":20}');
+  
+    Lvl1Number1Lbl.Visible=False;
+    Lvl1Number2Lbl.Visible=False;
+    Lvl1PointLbl.Visible=False;
+
+    Lvl1Number1Edt = Lvl1Form.AddNewProEdit(Lvl1TopLyt,'Lvl1Number1Edt','1.SAYI');
+    clComponent.SetupComponent(Lvl1Number1Edt,'{"Align":"MostLeft","Width":'+IntToStr(Lvl1TopLyt.Width/2-10)+',"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderWidth":4,"BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center"}');
+    Lvl1Number1Edt.clTypeOfField = taFloat;
+    
+    Lvl1Number2Edt = Lvl1Form.AddNewProEdit(Lvl1TopLyt,'Lvl1Number2Edt','2.SAYI');
+    clComponent.SetupComponent(Lvl1Number2Edt,'{"Align" : "MostLeft","Width":'+IntToStr(Lvl1TopLyt.Width/2-10)+',"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5 ,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":20,"TextColor":"#003366","TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginLeft":20}');
+    Lvl1Number2Edt.clTypeOfField = taFloat;
+    
+    Lvl1Number1Edt.Visible=False;
+    Lvl1Number2Edt.Visible=False;
+  
+    Lvl1StartBtn = Lvl1Form.AddNewProButton(Lvl1BottomLyt,'Lvl1StartBtn','BAŞLAT');
+    clComponent.SetupComponent(Lvl1StartBtn,'{"Align":"center","Width":100,"Height":40,"RoundHeight":2,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderWidth":4,"BorderColor":"#336699","TextColor":"#003366","TextBold":"yes","MarginRight":250}');
+    Lvl1Form.AddNewEvent(Lvl1StartBtn,tbeOnClick,'AssignNumber');
+    
+    Lvl1ShowAgainBtn = Lvl1Form.AddNewProButton(Lvl1BottomLyt,'Lvl1ShowAgainBtn','TEKRAR GÖSTER');
+    clComponent.SetupComponent(Lvl1ShowAgainBtn,'{"Align":"Center","Width":120,"Height":40,"BorderWidth":4,"RoundHeight":2,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes"}');
+    Lvl1ShowAgainBtn.Enabled=False;
+    Lvl1Form.AddNewEvent(Lvl1ShowAgainBtn,tbeOnClick,'AgainJkr');
+    
+    Lvl1ControlBtn = Lvl1Form.AddNewProButton(Lvl1BottomLyt,'Lvl1ControlBtn','KONTROL ET');
+    clComponent.SetupComponent(Lvl1ControlBtn,'{"Align":"Center","Width":100,"Height":40,"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes","MarginLeft":250}');
+    Lvl1ControlBtn.Enabled=False;
+    Lvl1Form.AddNewEvent(Lvl1ControlBtn,tbeOnClick,'Controls');
+    
+    Lvl1ShowTrueBtn = Lvl1Form.AddNewProButton(Lvl1BottomLyt,'Lvl1ShowTrueBtn','DOĞRUSUNU GÖSTER');
+    clComponent.SetupComponent(Lvl1ShowTrueBtn,'{"Align":"Center","Width":'+IntToStr(Lvl1BottomLyt.Width)+',"Height":40,"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes"}');
+    Lvl1ShowTrueBtn.Visible=False;
+    Lvl1Form.AddNewEvent(Lvl1ShowTrueBtn,tbeOnClick,'ShowTrue');
+    
+    Lvl1NewChapter = Lvl1Form.AddNewProButton(Lvl1BottomLyt,'Lvl1NewChapter','Yeni Bölüme Geç');
+    clComponent.SetupComponent(Lvl1NewChapter,'{"Align":"Center","Width":'+IntToStr(Lvl1BottomLyt.Width)+',"Height":40,"BorderWidth":4,"RoundHeight":2 ,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextColor":"#003366","TextBold":"yes"}');
+    Lvl1NewChapter.Visible=False;
+    Lvl1Form.AddNewEvent(Lvl1NewChapter,tbeOnClick,'GoLevel2');
+    
+    Level1Lbl = Lvl1Form.AddNewProLabel(Lvl1InformationLyt,'Level1Lbl','Level 1');
+    clComponent.SetupComponent(Level1Lbl,'{"Align":"MostRight","Height":20,"BackgroundColor":"#66CCCC","TextColor":"#6666FF","BorderWidth":2,"BorderColor":"3300CC","TextSize":20,"TextBold":"yes","RoundHeight":10,"RoundWidth":10,"TextVerticalAlign":"center","TextHorizontalAlign":"center","MarginRight":10,"MarginBottom":10,"MarginTop":10}');
+    
+    ShowTime= Lvl1Form.AddNewTimer(Lvl1Form,'ShowTime',1000);
+    ShowTime.Enabled=False;
+    
+    AnswerTime= Lvl1Form.AddNewTimer(Lvl1Form,'AnswerTime',1000);
+    AnswerTime.Enabled=False;
+    
+    Lvl1Form.AddNewEvent(Lvl1Form,tbeOnFormClose,'GoBack');
+    Lvl1Form.AddNewEvent(Lvl1Form,tbeOnVirtualKeyboardShown,'VirtualKeyboardShow'); 
+    Lvl1Form.AddNewEvent(Lvl1Form,tbeOnVirtualKeyboardHidden,'VirtualKeyboardHidden');  
+    
+    Lvl1Form.Run;
+    }
+    
+    void GoLevel1
+    {
+    MemoryGameLevel1;
+    FrmLoginScreen.ClHide;
+    }
+    
+    void GameAbout
+    {
+     if (AboutOpen == False)
+     {
+     AboutBtn.Text=' HAKKINDA ↓ ';
+     AboutMemo.Visible=True;
+     AboutOpen=True;
+     }
+     else 
+     {
+     AboutBtn.Text=' HAKKINDA → ';
+     AboutMemo.Visible=False;
+     AboutOpen=False;
+     }
+    }
+    
+    {
+    FrmLoginScreen = TCLGameForm.Create(Self);
+    FrmLoginScreen.SetFormColor('#c4c4c4','',clGNone);
+    AboutOpen=False;
+    
+    LoginScreenTopLyt = FrmLoginScreen.AddNewLayout(FrmLoginScreen,'LoginScreenTopLyt');
+    LoginScreenTopLyt.Align=alMostTop;
+    LoginScreenTopLyt.Width = TForm(FrmLoginScreen).ClientWidth;
+    LoginScreenTopLyt.Height = TForm(FrmLoginScreen).ClientHeight/2+120;
+
+    LoginScreenBottomLyt = FrmLoginScreen.AddNewLayout(FrmLoginScreen,'LoginScreenBottomLyt');
+    LoginScreenBottomLyt.Align=alMostBottom;
+    LoginScreenBottomLyt.Width = TForm(FrmLoginScreen).ClientWidth;
+    LoginScreenBottomLyt.Height = TForm(FrmLoginScreen).ClientHeight/2-120;
+    
+    GameCloseBtn = FrmLoginScreen.AddNewProButton(LoginScreenTopLyt,'GameCloseBtn','');
+    clComponent.SetupComponent(GameCloseBtn,'{"Align" : "None","Width":40,"Height":40,"ImgUrl":"https://clomosy.com/demos/XoXback.png"}');
+    GameCloseBtn.Position.X=5;
+    GameCloseBtn.Position.Y=5;
+    FrmLoginScreen.AddNewEvent(GameCloseBtn,tbeOnClick,'CloseGame');
+    
+    GameImg = FrmLoginScreen.AddNewProImage(LoginScreenTopLyt,'GameImg');
+    clComponent.SetupComponent(GameImg,'{"Align" : "Center","Width":220,"Height":220,"ImgUrl":"https://clomosy.com/demos/memorygame.png","ImgFit":"yes","MarginBottom":110}');
+    
+    TitleLbl = FrmLoginScreen.AddNewProLabel(LoginScreenTopLyt,'TitleLbl','HAFIZA OYUNU');
+    clComponent.SetupComponent(TitleLbl,'{"Align":"Center","Width":200,"Height":50,"TextColor":"#003366","TextSize":25,"TextBold":"yes","MarginTop":240,"TextHorizontalAlign":"Center"}');
+
+    GameStartBtn = FrmLoginScreen.AddNewProButton(LoginScreenTopLyt,'GameStartBtn','Oyuna Başla');
+    clComponent.SetupComponent(GameStartBtn,'{"Align" : "Center","Width":150,"Height":40,"BorderWidth":4,"RoundHeight":2,"RoundWidth":5,"BackgroundColor":"#F5F5F5","BorderColor":"#336699","TextSize":15,"TextColor":"#003366","TextBold":"yes","MarginTop":320}');
+    FrmLoginScreen.AddNewEvent(GameStartBtn,tbeOnClick,'GoLevel1');
+    
+    AboutMemo = FrmLoginScreen.AddNewMemo(LoginScreenBottomLyt,'AboutMemo','');
+    AboutMemo.Margins.Left=10;
+    AboutMemo.Margins.Right=10;
+    AboutMemo.Margins.Bottom=70;
+    AboutMemo.Align=alClient;
+    AboutMemo.StyledSettings = ssFamily;
+    AboutMemo.Text=' Oyunun Amacı : Belirlenen saniyede gözüken sayıları ezberleyip ve daha sonra çıkan boş kutucuklara o sayıları belirlenen sürede girmeniz gerekmektedir . Her bölümde 1 adet joker hakkınız bulunmaktadır . Bu hak "Tekrar Gösterme Hakkı " dır . Eğer belirtilen sürede aynı sayıları giremezseniz oyun sonlanır . Bölümler ilerledikçe zorlaşmaktadır . BAŞARILAR DİLERİM . ';
+    AboutMemo.TextSettings.WordWrap = True;
+    AboutMemo.Visible=False;
+
+    AboutBtn = FrmLoginScreen.AddNewProButton(LoginScreenTopLyt,'AboutBtn',' HAKKINDA → ');
+    clComponent.SetupComponent(AboutBtn,'{"Align" : "MostBottom","Width":150,"Height":40,"TextSize":15,"TextColor":"#003366","TextBold":"yes"}');
+    FrmLoginScreen.AddNewEvent(AboutBtn,tbeOnClick,'GameAbout');
+ 
+    FrmLoginScreen.Run;
+    }
+    
+    
+    
