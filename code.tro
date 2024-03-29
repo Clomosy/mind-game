@@ -1,3 +1,5 @@
+  //A
+  
   var
     FrmLoginScreen,Lvl1Form,Lvl2Form,Lvl3Form : TclGameForm;
     GameImg : TClProImage;
